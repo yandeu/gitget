@@ -39,7 +39,7 @@ const main = async () => {
 
   // download tar
   const downloadName = `https://github.com/${USER}/${REPO}/archive/${defaultBranch}.tar.gz`
-  step('Downloding:', downloadName)
+  step('Downloading:', downloadName)
   await fetch(downloadName, FILENAME)
 
   // define folder

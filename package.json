@@ -11,7 +11,8 @@
     "format": "prettier --write src/**",
     "format:check": "prettier --check src/**",
     "lint": "eslint src/**",
-    "lint:fix": "eslint --fix src/**"
+    "lint:fix": "eslint --fix src/**",
+    "prepublishOnly": "rimraf lib && npm run lint && tsc --project tsconfig.json"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     "@types/tar": "^4.0.4",
     "@yandeu/eslint-config": "^0.0.1",
     "@yandeu/prettier-config": "^0.0.1",
+    "rimraf": "^3.0.2",
     "typescript": "^4.2.3"
   },
   "dependencies": {
