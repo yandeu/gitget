@@ -5,6 +5,19 @@ import tar from 'tar'
 
 export const PACKAGE_NAME = 'gitget'
 
+export const trim = <T>(str: T): T | string => {
+  if (!str) return str
+
+  if (typeof str === 'number' || typeof str === 'string') {
+    let tmp = str.toString()
+    tmp = tmp.trim()
+    tmp = tmp.replace(/^\/|\/$/gm, '')
+    return tmp
+  }
+
+  return str
+}
+
 export const readTar = (file: string): Promise<tar.FileStat> => {
   return new Promise(resolve => {
     fs.createReadStream(file)

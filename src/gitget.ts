@@ -1,4 +1,4 @@
-import { PACKAGE_NAME, addDirectory, error, readTar, removeDirectory, step, success } from './utils'
+import { PACKAGE_NAME, addDirectory, error, readTar, removeDirectory, step, success, trim } from './utils'
 import { Octokit } from '@octokit/rest'
 import { fetch } from './utils'
 import path from 'path'
@@ -8,6 +8,11 @@ const PATH = `${path.resolve()}/.gitget`
 const FILENAME = `${PATH}/repo.tar.gz`
 
 export const gitget = async (USER: string, REPO: string, FOLDER: string, SUBDIR?: string) => {
+  USER = trim(USER)
+  REPO = trim(REPO)
+  FOLDER = trim(FOLDER)
+  SUBDIR = trim(SUBDIR)
+
   // print some info
   step(`Starting: ${PACKAGE_NAME}`)
   step('User:', USER)
