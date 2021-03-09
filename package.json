@@ -1,0 +1,44 @@
+{
+  "name": "gitget",
+  "version": "0.0.2",
+  "description": "📦 Clone GitHub repos fast and easy.",
+  "main": "lib/gitget.js",
+  "bin": {
+    "gitget": "./lib/bin.js"
+  },
+  "scripts": {
+    "dev": "tsc --watch",
+    "format": "prettier --write src/**",
+    "format:check": "prettier --check src/**",
+    "lint": "eslint src/**",
+    "lint:fix": "eslint --fix src/**"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yandeu/gitget.git"
+  },
+  "keywords": [
+    "git",
+    "github",
+    "clone",
+    "repo",
+    "repository"
+  ],
+  "author": "Yannick Deubel (https://github.com/yandeu)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yandeu/gitget/issues"
+  },
+  "homepage": "https://github.com/yandeu/gitget#readme",
+  "devDependencies": {
+    "@types/node": "^14.14.32",
+    "@types/tar": "^4.0.4",
+    "@yandeu/eslint-config": "^0.0.1",
+    "@yandeu/prettier-config": "^0.0.1",
+    "typescript": "^4.2.3"
+  },
+  "dependencies": {
+    "@octokit/rest": "^18.3.5",
+    "tar": "^6.1.0"
+  }
+}
