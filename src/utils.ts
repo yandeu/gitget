@@ -1,8 +1,20 @@
 import fs from 'fs'
 import https from 'https'
 import { symbols } from './symbols'
+import tar from 'tar'
 
 export const PACKAGE_NAME = 'gitget'
+
+export const readTar = (file: string): Promise<tar.FileStat> => {
+  return new Promise(resolve => {
+    fs.createReadStream(file)
+      .pipe(tar.t())
+      .on('entry', entry => {
+        // return the first path
+        return resolve(entry.path)
+      })
+  })
+}
 
 export const addDirectory = (path: string): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -29,7 +41,7 @@ export const fetch = (url: string, dest: string): Promise<void> => {
         const code = res.statusCode
         const headers = res.headers
 
-        step('statusCode:', code)
+        step('StatusCode:', code)
 
         if (!code) return reject()
 

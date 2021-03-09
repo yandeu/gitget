@@ -1,4 +1,4 @@
-import { PACKAGE_NAME, addDirectory, error, removeDirectory, step, success } from './utils'
+import { PACKAGE_NAME, addDirectory, error, removeDirectory, step, success, readTar } from './utils'
 import { Octokit } from '@octokit/rest'
 import { fetch } from './utils'
 import path from 'path'
@@ -14,10 +14,16 @@ if (KEYS.length === 0 || KEYS.length > 2) error()
 
 const USER = KEYS[0].split('/')[0]
 const REPO = KEYS[0].split('/')[1]
+const SUBDIR = KEYS[0]
+  .replace(/\/$/, '')
+  .split('/')
+  .filter((v, i) => i >= 2)
+  .join('/')
 const FOLDER = KEYS[1]
 
-step(`User:`, USER)
-step(`Repo:`, REPO)
+step('User:', USER)
+step('Repo:', REPO)
+if (SUBDIR) step('Subdir:', SUBDIR)
 
 const main = async () => {
   // detect default branch
@@ -48,9 +54,19 @@ const main = async () => {
   // create  directory
   await await addDirectory(CWD)
 
+  // read first path line of tar
+  const firstPath = await readTar(FILENAME)
+
   // untar
   tar
-    .x({ file: FILENAME, strip: 1, cwd: CWD })
+    .x(
+      {
+        file: FILENAME,
+        strip: SUBDIR ? SUBDIR.split('/').length + 1 : 1,
+        cwd: CWD
+      },
+      SUBDIR ? [`${firstPath}${SUBDIR}/`] : []
+    )
     .then(async () => {
       // remove .tmp directory
       await removeDirectory(PATH)
