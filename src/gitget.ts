@@ -1,4 +1,4 @@
-import { PACKAGE_NAME, addDirectory, error, removeDirectory, step, success, readTar } from './utils'
+import { PACKAGE_NAME, addDirectory, error, readTar, removeDirectory, step, success } from './utils'
 import { Octokit } from '@octokit/rest'
 import { fetch } from './utils'
 import path from 'path'
