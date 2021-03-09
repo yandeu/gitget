@@ -56,7 +56,8 @@ const main = async () => {
       await removeDirectory(PATH)
 
       // done
-      success(`Done! Your repo is in /${CWD}.`)
+      const makeBold = (str: string) => `\u001b[1m${str}\u001b[22m`
+      success(`Done! Your repo is in /${makeBold(CWD)}.`)
     })
     .catch(err => {
       return error(err.message)

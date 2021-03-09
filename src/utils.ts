@@ -36,23 +36,23 @@ export const fetch = (url: string, dest: string): Promise<void> => {
         if (code >= 400) {
           return reject({ code, message: res.statusMessage })
         } else if (code >= 300) {
-          if (typeof headers.location !== 'string') return reject('Location not found')
+          if (typeof headers.location !== 'string') return reject(error('Location not found in headers'))
           fetch(headers.location, dest).then(resolve, reject)
         } else {
           res
             .pipe(fs.createWriteStream(dest))
             .on('finish', () => resolve())
-            .on('error', err => reject(err.message))
+            .on('error', err => reject(error(err.message)))
         }
       })
       .on('error', err => {
-        reject(err.message)
+        reject(error(err.message))
       })
   })
 }
 
 export const error = (msg?: string) => {
-  if (msg) console.error(msg)
+  if (msg) console.error(`${symbols.error} ${msg}`)
   else console.error(`${symbols.error} Usage: ${PACKAGE_NAME} <user/repo> <folder>`)
   process.exit(1)
 }
