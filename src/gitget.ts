@@ -34,21 +34,21 @@ export const gitget = async (USER: string, REPO: string, FOLDER: string, SUBDIR?
   if (!defaultBranch) return error('Default branch not found')
 
   // create .tmp directory
-  await await addDirectory(PATH)
+  await addDirectory(PATH).catch(err => error(err.message))
 
   // download tar
   const downloadName = `https://github.com/${USER}/${REPO}/archive/${defaultBranch}.tar.gz`
   step('Downloading:', downloadName)
-  await fetch(downloadName, FILENAME)
+  await fetch(downloadName, FILENAME).catch(err => error(err.message))
 
   // define folder
   const CWD = FOLDER ?? REPO
 
   // create  directory
-  await await addDirectory(CWD)
+  await addDirectory(CWD).catch(err => error(err.message))
 
   // read first path line of tar
-  const firstPath = await readTar(FILENAME)
+  const firstPath = await readTar(FILENAME).catch(err => error(err.message))
 
   // untar
   tar
@@ -62,7 +62,7 @@ export const gitget = async (USER: string, REPO: string, FOLDER: string, SUBDIR?
     )
     .then(async () => {
       // remove .tmp directory
-      await removeDirectory(PATH)
+      await removeDirectory(PATH).catch(err => error(err.message))
 
       // done
       const makeBold = (str: string) => `\u001b[1m${str}\u001b[22m`
