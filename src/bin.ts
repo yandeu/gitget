@@ -14,5 +14,6 @@ const SUBDIR = KEYS[0]
   .filter((v, i) => i >= 2)
   .join('/')
 const FOLDER = KEYS[1]
+const BRANCH = SUBDIR ? SUBDIR.split('#')[1] : REPO.split('#')[1]
 
-gitget(USER, REPO, FOLDER, SUBDIR)
+gitget({ folder: FOLDER, user: USER, subdir: SUBDIR, branch: BRANCH, repo: REPO })

@@ -7,31 +7,51 @@ import tar from 'tar'
 const PATH = `${path.resolve()}/.gitget`
 const FILENAME = `${PATH}/repo.tar.gz`
 
-export const gitget = async (USER: string, REPO: string, FOLDER: string, SUBDIR?: string) => {
-  USER = trim(USER)
-  REPO = trim(REPO)
-  FOLDER = trim(FOLDER)
-  SUBDIR = trim(SUBDIR)
+export interface GitGetOption {
+  user: string
+  repo: string
+  folder?: string
+  subdir?: string
+  /** specify a tag, branch or commit */
+  branch?: string
+}
 
-  // print some info
+export const gitget = async (options: GitGetOption) => {
+  const { user, repo, folder, subdir, branch } = options
+  if (!user) error()
+  if (!repo) error()
+
+  const USER = trim(user)
+  const REPO = trim(repo.split('#')[0])
+  const FOLDER = trim(folder)
+  const SUBDIR = trim(subdir?.split('#')[0])
+  const BRANCH = branch
+
+  // print some infos
   step(`Starting: ${PACKAGE_NAME}`)
   step('User:', USER)
   step('Repo:', REPO)
   if (SUBDIR) step('Subdir:', SUBDIR)
 
-  // detect default branch
-  const octokit = new Octokit()
-  const res = await octokit.repos
-    .get({
-      owner: USER,
-      repo: REPO
-    })
-    .catch(err => {
-      return error(err.message)
-    })
+  let defaultBranch = BRANCH
 
-  const defaultBranch = res?.data?.default_branch
-  if (!defaultBranch) return error('Default branch not found')
+  // detect default branch
+  if (!BRANCH) {
+    const octokit = new Octokit()
+    const res = await octokit.repos
+      .get({
+        owner: USER,
+        repo: REPO
+      })
+      .catch(err => {
+        return error(err.message)
+      })
+
+    defaultBranch = res?.data?.default_branch
+    if (!defaultBranch) return error('Default branch not found')
+  }
+
+  step('Tag/Branch/Commit:', defaultBranch)
 
   // create .tmp directory
   await addDirectory(PATH).catch(err => error(err.message))

@@ -78,7 +78,7 @@ export const fetch = (url: string, dest: string): Promise<void> => {
 
 export const error = (msg?: string) => {
   if (msg) console.error(`${symbols.error} ${msg}`)
-  else console.error(`${symbols.error} Usage: ${PACKAGE_NAME} <user/repo> <folder>`)
+  else console.error(`${symbols.error} Usage: ${PACKAGE_NAME} <user/repo>`)
   process.exit(1)
 }
 
