@@ -18,7 +18,23 @@ export const trim = <T>(str: T): T | string => {
   return str
 }
 
-export const readTar = (file: string): Promise<tar.FileStat> => {
+export const unTar = async (
+  FILENAME: string,
+  SUBDIR: string | undefined,
+  CWD: string,
+  firstPath: string | undefined
+): Promise<void> => {
+  await tar.x(
+    {
+      file: FILENAME,
+      strip: SUBDIR ? SUBDIR.split('/').length + 1 : 1,
+      cwd: CWD
+    },
+    SUBDIR ? [`${firstPath}${SUBDIR}/`] : []
+  )
+}
+
+export const readTar = (file: string): Promise<string> => {
   return new Promise(resolve => {
     fs.createReadStream(file)
       .pipe(tar.t())
@@ -28,6 +44,8 @@ export const readTar = (file: string): Promise<tar.FileStat> => {
       })
   })
 }
+
+export const makeBold = (str: string) => `\u001b[1m${str}\u001b[22m`
 
 export const addDirectory = (path: string): Promise<void> => {
   return new Promise((resolve, reject) => {

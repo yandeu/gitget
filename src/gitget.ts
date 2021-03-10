@@ -1,8 +1,18 @@
-import { PACKAGE_NAME, addDirectory, error, readTar, removeDirectory, step, success, trim } from './utils'
+import {
+  PACKAGE_NAME,
+  addDirectory,
+  error,
+  makeBold,
+  readTar,
+  removeDirectory,
+  step,
+  success,
+  trim,
+  unTar
+} from './utils'
 import { Octokit } from '@octokit/rest'
 import { fetch } from './utils'
 import path from 'path'
-import tar from 'tar'
 
 const PATH = `${path.resolve()}/.gitget`
 const FILENAME = `${PATH}/repo.tar.gz`
@@ -14,10 +24,11 @@ export interface GitGetOption {
   subdir?: string
   /** specify a tag, branch or commit */
   branch?: string
+  test?: boolean
 }
 
 export const gitget = async (options: GitGetOption) => {
-  const { user, repo, folder, subdir, branch } = options
+  const { user, repo, folder, subdir, branch, test } = options
   if (!user) error()
   if (!repo) error()
 
@@ -28,6 +39,8 @@ export const gitget = async (options: GitGetOption) => {
   const SUBDIR = trim(subdir?.split('#')[0])
   const BRANCH = branch
 
+  if (test) return { user: USER, repo: REPO, folder: FOLDER, subdir: SUBDIR, branch: BRANCH, isTest: true }
+
   // print some infos
   step(`Starting: ${PACKAGE_NAME}`)
   step('User:', USER)
@@ -36,7 +49,7 @@ export const gitget = async (options: GitGetOption) => {
 
   let defaultBranch = BRANCH
 
-  // detect default branch
+  // get default branch
   if (!BRANCH) {
     const octokit = new Octokit()
     const res = await octokit.repos
@@ -72,24 +85,12 @@ export const gitget = async (options: GitGetOption) => {
   const firstPath = await readTar(FILENAME).catch(err => error(err.message))
 
   // untar
-  tar
-    .x(
-      {
-        file: FILENAME,
-        strip: SUBDIR ? SUBDIR.split('/').length + 1 : 1,
-        cwd: CWD
-      },
-      SUBDIR ? [`${firstPath}${SUBDIR}/`] : []
-    )
-    .then(async () => {
-      // remove .tmp directory
-      await removeDirectory(PATH).catch(err => error(err.message))
+  await unTar(FILENAME, SUBDIR, CWD, firstPath).catch(err => error(err.message))
 
-      // done
-      const makeBold = (str: string) => `\u001b[1m${str}\u001b[22m`
-      success(`Done! Your repo is in /${makeBold(CWD)}.`)
-    })
-    .catch(err => {
-      return error(err.message)
-    })
+  // remove .tmp directory
+  await removeDirectory(PATH).catch(err => error(err.message))
+
+  // done
+  success(`Done! Your repo is in /${makeBold(CWD)}.`)
+  return { success: true }
 }
