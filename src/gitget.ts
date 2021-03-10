@@ -6,6 +6,7 @@ import {
   makeBold,
   readTar,
   removeDirectory,
+  setSilent,
   step,
   success,
   trim,
@@ -26,12 +27,17 @@ export interface GitGetOption {
   /** specify a tag, branch or commit */
   branch?: string
   test?: boolean
+  /** silences steps (errors are still displayed) */
+  silent?: boolean
 }
 
 export const gitget = async (options: GitGetOption) => {
-  const { user, repo, folder, subdir, branch, test } = options
+  const { user, repo, folder, subdir, branch, test, silent } = options
   if (!user) error()
   if (!repo) error()
+
+  // set silent
+  setSilent(silent)
 
   // trim input
   const USER = trim(user)
@@ -45,7 +51,7 @@ export const gitget = async (options: GitGetOption) => {
   if (test) return { user: USER, repo: REPO, folder: FOLDER, subdir: SUBDIR, branch: BRANCH, isTest: true }
 
   // print some infos
-  step(`Starting: ${PACKAGE_NAME}`)
+  step(`Starting: ${makeBold(PACKAGE_NAME)}`)
   step('User:', USER)
   step('Repo:', REPO)
   if (SUBDIR) step('Subdir:', SUBDIR)

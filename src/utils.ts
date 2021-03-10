@@ -4,6 +4,13 @@ import https from 'https'
 import { symbols } from './symbols'
 import tar from 'tar'
 
+let _silent = false
+
+export const setSilent = (silent: boolean | undefined) => {
+  if (typeof silent === 'undefined') return
+  _silent = silent
+}
+
 export const PACKAGE_NAME = 'gitget'
 
 export const trim = <T>(str: T): T | string => {
@@ -111,9 +118,11 @@ export const error = (msg?: string) => {
 }
 
 export const step = (...msg: any[]) => {
+  if (_silent) return
   console.log(`${symbols.step} ${msg.join(' ')}`)
 }
 
 export const success = (msg: string) => {
+  if (_silent) return
   console.log(`${symbols.success} ${msg}`)
 }

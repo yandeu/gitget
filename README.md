@@ -36,6 +36,8 @@ interface GitGetOption {
   /** specify a tag, branch or commit */
   branch?: string
   test?: boolean
+  /** silences steps (errors are still displayed) */
+  silent?: boolean
 }
 ```
 
