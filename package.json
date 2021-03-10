@@ -15,7 +15,7 @@
     "format:check": "prettier --check src/**",
     "lint": "eslint src/**",
     "lint:fix": "eslint --fix src/**",
-    "commit": "npm run prepublishOnly && node scripts/commit.cjs",
+    "release": "node scripts/release.cjs",
     "prepublishOnly": "rimraf lib && npm run lint && npm run build && npm test"
   },
   "repository": {
