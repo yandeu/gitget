@@ -8,11 +8,14 @@ if (KEYS.length === 0 || KEYS.length > 2) error()
 
 const USER = KEYS[0].split('/')[0]
 const REPO = KEYS[0].split('/')[1]
+if (!REPO) error()
+
 const SUBDIR = KEYS[0]
   .replace(/\/$/, '')
   .split('/')
   .filter((v, i) => i >= 2)
   .join('/')
+
 const FOLDER = KEYS[1]
 const BRANCH = SUBDIR ? SUBDIR.split('#')[1] : REPO.split('#')[1]
 

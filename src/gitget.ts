@@ -23,6 +23,7 @@ export const gitget = async (options: GitGetOption) => {
 
   const USER = trim(user)
   const REPO = trim(repo.split('#')[0])
+  if (!REPO) error()
   const FOLDER = trim(folder)
   const SUBDIR = trim(subdir?.split('#')[0])
   const BRANCH = branch
