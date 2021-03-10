@@ -1,6 +1,6 @@
 {
   "name": "gitget",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "📦 Clone GitHub repos fast and easy.",
   "main": "lib/gitget.js",
   "types": "lib/gitget.d.ts",
