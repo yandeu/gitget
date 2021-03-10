@@ -35,6 +35,7 @@ interface GitGetOption {
   subdir?: string
   /** specify a tag, branch or commit */
   branch?: string
+  test?: boolean
 }
 ```
 

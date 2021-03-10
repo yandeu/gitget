@@ -14,6 +14,7 @@ import {
 import { fetch } from './utils'
 import path from 'path'
 
+// const
 const PATH = `${path.resolve()}/.gitget`
 const FILENAME = `${PATH}/repo.tar.gz`
 
@@ -32,6 +33,7 @@ export const gitget = async (options: GitGetOption) => {
   if (!user) error()
   if (!repo) error()
 
+  // trim input
   const USER = trim(user)
   const REPO = trim(repo.split('#')[0])
   if (!REPO) error()
@@ -39,6 +41,7 @@ export const gitget = async (options: GitGetOption) => {
   const SUBDIR = trim(subdir?.split('#')[0])
   const BRANCH = branch
 
+  // return test results
   if (test) return { user: USER, repo: REPO, folder: FOLDER, subdir: SUBDIR, branch: BRANCH, isTest: true }
 
   // print some infos
