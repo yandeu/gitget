@@ -2,6 +2,7 @@ import {
   PACKAGE_NAME,
   addDirectory,
   error,
+  getDefaultBranch,
   makeBold,
   readTar,
   removeDirectory,
@@ -10,7 +11,6 @@ import {
   trim,
   unTar
 } from './utils'
-import { Octokit } from '@octokit/rest'
 import { fetch } from './utils'
 import path from 'path'
 
@@ -51,18 +51,9 @@ export const gitget = async (options: GitGetOption) => {
 
   // get default branch
   if (!BRANCH) {
-    const octokit = new Octokit()
-    const res = await octokit.repos
-      .get({
-        owner: USER,
-        repo: REPO
-      })
-      .catch(err => {
-        return error(err.message)
-      })
-
-    defaultBranch = res?.data?.default_branch
+    defaultBranch = await getDefaultBranch(USER, REPO).catch(err => error(err.message))
     if (!defaultBranch) return error('Default branch not found')
+    step('Default Branch:', defaultBranch)
   }
 
   step('Tag/Branch/Commit:', defaultBranch)

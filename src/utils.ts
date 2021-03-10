@@ -1,3 +1,4 @@
+import { Octokit } from '@octokit/rest'
 import fs from 'fs'
 import https from 'https'
 import { symbols } from './symbols'
@@ -46,6 +47,15 @@ export const readTar = (file: string): Promise<string> => {
 }
 
 export const makeBold = (str: string) => `\u001b[1m${str}\u001b[22m`
+
+export const getDefaultBranch = async (USER: string, REPO: string) => {
+  const octokit = new Octokit()
+  const res = await octokit.repos.get({
+    owner: USER,
+    repo: REPO
+  })
+  return res?.data?.default_branch
+}
 
 export const addDirectory = (path: string): Promise<void> => {
   return new Promise((resolve, reject) => {
