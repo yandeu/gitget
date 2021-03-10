@@ -33,8 +33,8 @@ export interface GitGetOption {
 
 export const gitget = async (options: GitGetOption) => {
   const { user, repo, folder, subdir, branch, test, silent } = options
-  if (!user) error()
-  if (!repo) error()
+  if (!user) return error()
+  if (!repo) return error()
 
   // set silent
   setSilent(silent)
@@ -42,13 +42,17 @@ export const gitget = async (options: GitGetOption) => {
   // trim input
   const USER = trim(user)
   const REPO = trim(repo.split('#')[0])
-  if (!REPO) error()
+  if (!REPO) return error()
   const FOLDER = trim(folder)
   const SUBDIR = trim(subdir?.split('#')[0])
   const BRANCH = branch
 
   // return test results
-  if (test) return { user: USER, repo: REPO, folder: FOLDER, subdir: SUBDIR, branch: BRANCH, isTest: true }
+  let t = `Clone ${USER}/${REPO}`
+  if (SUBDIR) t += `/${SUBDIR}`
+  t += `#${BRANCH ? BRANCH : 'default'}`
+  t += ` to /${FOLDER ? FOLDER : REPO}.`
+  if (test) return { user: USER, repo: REPO, folder: FOLDER, subdir: SUBDIR, branch: BRANCH, isTest: true, str: t }
 
   // print some infos
   step(`Starting: ${makeBold(PACKAGE_NAME)}`)
