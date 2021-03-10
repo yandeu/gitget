@@ -3,6 +3,7 @@
   "version": "0.0.5",
   "description": "📦 Clone GitHub repos fast and easy.",
   "main": "lib/gitget.js",
+  "types": "lib/gitget.d.ts",
   "bin": {
     "gitget": "./lib/bin.js"
   },
