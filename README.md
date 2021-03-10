@@ -59,6 +59,14 @@ import { gitget } from 'gitget'
 gitget({ GitGetOptions })
 ```
 
+## Try it now!
+
+Download [Day.js](https://github.com/iamkun/dayjs/) for example.
+
+```console
+npx gitget iamkun/dayjs
+```
+
 ## License
 
 [MIT](https://github.com/yandeu/gitget/blob/main/LICENSE)
