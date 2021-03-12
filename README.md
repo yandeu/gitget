@@ -23,6 +23,10 @@ $ npx gitget user/repo/subfolder folder
 $ npx gitget user/repo#dev       # branch
 $ npx gitget user/repo#v1.2.3    # release tag
 $ npx gitget user/repo#1234abcd  # commit hash
+
+# or simply copy and past the url from your browser
+# (downloads the subdir "core/conventional-commits/lib" from lerna/lerna#next)
+$ npx gitget https://github.com/lerna/lerna/tree/next/core/conventional-commits/lib
 ```
 
 ### Node.js
