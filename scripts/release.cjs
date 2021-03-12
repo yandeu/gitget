@@ -26,7 +26,8 @@ const main = async () => {
   await run('git add .')
   await run(`git commit -m "v${version}"`)
   await run(`git tag "v${version}"`)
-  success('Done! 😊')
+  success('Done! 😊 Now run:')
+  comment('git push; git push --tags; npm publish')
   rl.close()
 }
 
@@ -36,6 +37,10 @@ const error = str => {
 
 const step = str => {
   console.log(`\u001b[34m⠕\u001b[39m Running: ${str}`)
+}
+
+const comment = str => {
+  console.log(`  ${makeGray(str)}`)
 }
 
 const success = str => {
