@@ -24,13 +24,13 @@ export const parseGithubUrl = (url: string): string => {
   url = url.replace('https://github.com/', '')
 
   // reject single files
-  if (url.match(/^[\w-]+\/[\w-]+\/blob\//gm)) return error(`Sorry. I can't download single files yet. 😯`)
+  if (url.match(/^[\w-\\.]+\/[\w-\\.]+\/blob\//gm)) return error(`Sorry. I can't download single files yet. 😯`)
 
   // is repo start page (https://github.com/repo/name)
-  if (url.match(/^[\w-]+\/[\w-]+$/gm)) return url
+  if (url.match(/^[\w-\\.]+\/[\w-\\.]+$/gm)) return url
 
   // repo url with subdir and/or branch/tag/commit
-  const res = /^([\w-]+\/[\w-]+)\/tree\/([\w-]+)\/(.+)/gm.exec(url)
+  const res = /^([\w-\\.]+\/[\w-\\.]+)\/tree\/([\w-\\.]+)\/(.+)/gm.exec(url)
   if (res && res.length >= 3) return `${res[1]}/${res[3]}#${res[2]}`
 
   return error('Could not parse github url')
