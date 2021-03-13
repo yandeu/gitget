@@ -1,6 +1,7 @@
 import { Octokit } from '@octokit/rest'
 import fs from 'fs'
 import https from 'https'
+import path from 'path'
 import { symbols } from './symbols'
 import tar from 'tar'
 
@@ -12,6 +13,9 @@ export const setSilent = (silent: boolean | undefined) => {
 }
 
 export const PACKAGE_NAME = 'gitget'
+// const
+const PATH = `${path.resolve()}/.gitget`
+const FILENAME = `${PATH}/repo.tar.gz`
 
 export const parseGithubUrl = (url: string): string => {
   // github url
@@ -105,7 +109,9 @@ export const removeDirectory = (path: string): Promise<void> => {
   })
 }
 
-export const fetch = (url: string, dest: string): Promise<void> => {
+export const fetch = (url: string, dest?: string): Promise<void | string> => {
+  let data = ''
+
   return new Promise((resolve, reject) => {
     https
       .get(url, res => {
@@ -120,18 +126,49 @@ export const fetch = (url: string, dest: string): Promise<void> => {
           return reject({ code, message: res.statusMessage })
         } else if (code >= 300) {
           if (typeof headers.location !== 'string') return reject(error('Location not found in headers'))
+          if (headers.location === dest) return reject(error('Link not found'))
           fetch(headers.location, dest).then(resolve, reject)
         } else {
-          res
-            .pipe(fs.createWriteStream(dest))
-            .on('finish', () => resolve())
-            .on('error', err => reject(error(err.message)))
+          if (dest) {
+            res
+              .pipe(fs.createWriteStream(dest))
+              .on('finish', () => resolve())
+              .on('error', err => reject(error(err.message)))
+          } else {
+            res
+              .on('data', d => {
+                data += d.toString()
+              })
+              .on('end', () => resolve(data))
+              .on('error', err => reject(error(err.message)))
+          }
         }
       })
       .on('error', err => {
         reject(error(err.message))
       })
   })
+}
+
+export const download = async (downloadLink: string, CWD: string, SUBDIR?: string) => {
+  // create .tmp directory
+  await addDirectory(PATH).catch(err => error(err.message))
+
+  // download tar
+  step('Downloading:', downloadLink)
+  await fetch(downloadLink, FILENAME).catch(err => error(err.message))
+
+  // create  directory
+  await addDirectory(CWD).catch(err => error(err.message))
+
+  // read first path line of tar
+  const firstPath = await readTar(FILENAME).catch(err => error(err.message))
+
+  // untar
+  await unTar(FILENAME, SUBDIR, CWD, firstPath).catch(err => error(err.message))
+
+  // remove .tmp directory
+  await removeDirectory(PATH).catch(err => error(err.message))
 }
 
 export const error = (msg?: string) => {

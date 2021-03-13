@@ -14,8 +14,8 @@
     "test": "jest",
     "format": "prettier --write src/**",
     "format:check": "prettier --check src/**",
-    "lint": "eslint src/**",
-    "lint:fix": "eslint --fix src/**",
+    "lint": "eslint src/**/*",
+    "lint:fix": "eslint --fix src/**/*",
     "release": "node scripts/release.cjs",
     "prepublishOnly": "rimraf lib && npm run lint && npm run build && npm test"
   },

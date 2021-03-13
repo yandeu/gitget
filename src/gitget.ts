@@ -1,27 +1,9 @@
-import {
-  PACKAGE_NAME,
-  addDirectory,
-  error,
-  getDefaultBranch,
-  makeBold,
-  readTar,
-  removeDirectory,
-  setSilent,
-  step,
-  success,
-  trim,
-  unTar
-} from './utils'
-import { fetch } from './utils'
-import path from 'path'
-
-// const
-const PATH = `${path.resolve()}/.gitget`
-const FILENAME = `${PATH}/repo.tar.gz`
+import { PACKAGE_NAME, download, error, getDefaultBranch, makeBold, setSilent, step, success, trim } from './utils'
+import { getNpmPackage } from './services/npm'
 
 export interface GitGetOption {
-  user: string
-  repo: string
+  user?: string
+  repo?: string
   folder?: string
   subdir?: string
   /** specify a tag, branch or commit */
@@ -29,15 +11,24 @@ export interface GitGetOption {
   test?: boolean
   /** silences steps (errors are still displayed) */
   silent?: boolean
+  /** npm package name */
+  npm?: string
 }
 
 export const gitget = async (options: GitGetOption) => {
-  const { user, repo, folder, subdir, branch, test, silent } = options
-  if (!user) return error()
-  if (!repo) return error()
+  const { user, repo, folder, subdir, branch, test, silent, npm } = options
 
   // set silent
   setSilent(silent)
+
+  // get from npm
+  if (npm) {
+    const res = await getNpmPackage(npm)
+    return res
+  }
+
+  if (!user) return error()
+  if (!repo) return error()
 
   // trim input
   const USER = trim(user)
@@ -71,28 +62,9 @@ export const gitget = async (options: GitGetOption) => {
 
   step('Tag/Branch/Commit:', defaultBranch)
 
-  // create .tmp directory
-  await addDirectory(PATH).catch(err => error(err.message))
-
-  // download tar
-  const downloadName = `https://github.com/${USER}/${REPO}/archive/${defaultBranch}.tar.gz`
-  step('Downloading:', downloadName)
-  await fetch(downloadName, FILENAME).catch(err => error(err.message))
-
-  // define folder
+  const downloadLink = `https://github.com/${USER}/${REPO}/archive/${defaultBranch}.tar.gz`
   const CWD = FOLDER ?? REPO
-
-  // create  directory
-  await addDirectory(CWD).catch(err => error(err.message))
-
-  // read first path line of tar
-  const firstPath = await readTar(FILENAME).catch(err => error(err.message))
-
-  // untar
-  await unTar(FILENAME, SUBDIR, CWD, firstPath).catch(err => error(err.message))
-
-  // remove .tmp directory
-  await removeDirectory(PATH).catch(err => error(err.message))
+  await download(downloadLink, CWD, SUBDIR)
 
   // done
   success(`Done! Your repo is in /${makeBold(CWD)}.`)
