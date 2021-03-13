@@ -8,7 +8,8 @@
     "gitget": "./lib/bin.js"
   },
   "scripts": {
-    "dev": "tsc --watch",
+    "start": "npm run dev",
+    "dev": "rimraf lib && tsc --watch",
     "build": "tsc --project tsconfig.json",
     "test": "jest",
     "format": "prettier --write src/**",
