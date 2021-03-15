@@ -1,4 +1,3 @@
-import { Octokit } from '@octokit/rest'
 import fs from 'fs'
 import https from 'https'
 import path from 'path'
@@ -83,12 +82,17 @@ export const readTar = (file: string): Promise<string> => {
 export const makeBold = (str: string) => `\u001b[1m${str}\u001b[22m`
 
 export const getDefaultBranch = async (USER: string, REPO: string) => {
-  const octokit = new Octokit()
-  const res = await octokit.repos.get({
-    owner: USER,
-    repo: REPO
-  })
-  return res?.data?.default_branch
+  const options = { headers: { 'User-Agent': 'request', Accept: 'application/vnd.github.v3+json' } }
+
+  const res = await fetch(`https://api.github.com/repos/${USER}/${REPO}`, null, options).catch(err =>
+    error(err.message)
+  )
+
+  if (!res || typeof res !== 'string') return error()
+
+  const json = JSON.parse(res)
+
+  return json.default_branch
 }
 
 export const addDirectory = (path: string): Promise<void> => {
@@ -109,12 +113,16 @@ export const removeDirectory = (path: string): Promise<void> => {
   })
 }
 
-export const fetch = (url: string, dest?: string): Promise<void | string> => {
+export const fetch = (
+  url: string,
+  dest?: string | null,
+  options: https.RequestOptions = {}
+): Promise<void | string> => {
   let data = ''
 
   return new Promise((resolve, reject) => {
     https
-      .get(url, res => {
+      .get(url, options, res => {
         const code = res.statusCode
         const headers = res.headers
 
