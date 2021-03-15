@@ -8,7 +8,7 @@ if (KEYS.length === 0 || KEYS.length > 2) error()
 
 const main = async () => {
   const isNpm = KEYS[0].match(/^npm:/gm)
-  if (isNpm) return await gitget({ npm: KEYS[0].replace(/^npm:/, '') })
+  if (isNpm) return await gitget({ npm: KEYS[0].replace(/^npm:/, ''), folder: KEYS[1] })
 
   KEYS[0] = parseGithubUrl(KEYS[0])
 

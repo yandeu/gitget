@@ -11,7 +11,7 @@ interface NpmResponse {
   }
 }
 
-export const getNpmPackage = async (pkg: string): Promise<any> => {
+export const getNpmPackage = async (pkg: string, folder?: string): Promise<any> => {
   step('Fetch npm data')
   const json = await fetch(`https://registry.npmjs.org/${pkg}`).catch(err => error(err.message))
 
@@ -20,13 +20,13 @@ export const getNpmPackage = async (pkg: string): Promise<any> => {
   const obj = JSON.parse(json) as NpmResponse
 
   step('Parse folder name')
-  const folder = pkg.replace(/@/, '').replace('/', '-').replace('--', '-')
+  const _folder = folder ?? pkg.replace(/@/, '').replace('/', '-').replace('--', '-')
 
   step('Download npm package')
   const version = obj['dist-tags'].latest
-  await download(obj.versions[version].dist.tarball, folder)
+  await download(obj.versions[version].dist.tarball, _folder)
 
   // done
-  success(`Done! Your package is in /${makeBold(folder)}.`)
+  success(`Done! Your package is in /${makeBold(_folder)}.`)
   return { success: true }
 }

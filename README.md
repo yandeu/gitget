@@ -9,6 +9,8 @@
 ### Console
 
 ```bash
+# GitHub Repository
+
 # clone to /repo
 # (downloads the default branch of user/repo from GitHub)
 $ npx gitget user/repo
@@ -27,9 +29,16 @@ $ npx gitget user/repo#1234abcd  # commit hash
 # or simply copy and past the url from your browser
 # (downloads the subdir "core/conventional-commits/lib" from lerna/lerna#next)
 $ npx gitget https://github.com/lerna/lerna/tree/next/core/conventional-commits/lib
+```
+
+```bash
+# NPM Package
 
 # download npm package
 $ npx gitget npm:packageName
+
+# download npm package to /folder
+$ npx gitget npm:packageName folder
 ```
 
 ### Node.js

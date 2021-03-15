@@ -23,7 +23,7 @@ export const gitget = async (options: GitGetOption) => {
 
   // get from npm
   if (npm) {
-    const res = await getNpmPackage(npm)
+    const res = await getNpmPackage(npm, folder)
     return res
   }
 
