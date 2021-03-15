@@ -1,14 +1,17 @@
 #!/usr/bin/env node
 
-import { error, parseGithubUrl } from './utils'
+import { REGEX, error, isOption, parseGithubUrl } from './utils'
 import { gitget } from './gitget'
 
 const KEYS = process.argv.slice(2)
 if (KEYS.length === 0 || KEYS.length > 2) error()
 
 const main = async () => {
-  const isNpm = KEYS[0].match(/^npm:/gm)
-  if (isNpm) return await gitget({ npm: KEYS[0].replace(/^npm:/, ''), folder: KEYS[1] })
+  const isNpm = KEYS[0].match(REGEX.npm)
+  if (isNpm) {
+    const folder = !isOption(KEYS[1]) ? KEYS[1] : undefined
+    return await gitget({ npm: KEYS[0].replace(/^npm:/, ''), folder: folder })
+  }
 
   KEYS[0] = parseGithubUrl(KEYS[0])
 

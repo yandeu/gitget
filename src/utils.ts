@@ -6,6 +6,15 @@ import tar from 'tar'
 
 let _silent = false
 
+export const REGEX = {
+  npm: /^npm:/gm,
+  option: /^--?\S+/gm
+}
+
+export const isOption = (arg: string) => {
+  return arg && arg.match(REGEX.option)
+}
+
 export const setSilent = (silent: boolean | undefined) => {
   if (typeof silent === 'undefined') return
   _silent = silent
