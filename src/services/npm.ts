@@ -1,4 +1,4 @@
-import { download, error, makeBold, step, success } from '../utils'
+import { download, error, fetch, makeBold, step, success } from '../utils'
 
 interface NpmResponse {
   'dist-tags': { latest: string }
