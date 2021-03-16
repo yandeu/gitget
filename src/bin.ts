@@ -3,12 +3,18 @@
 import { REGEX, error, isOption, parseGithubUrl } from './utils'
 import { gitget } from './gitget'
 
-const KEYS = process.argv.slice(2)
+let KEYS = process.argv.slice(2)
 if (KEYS.length === 0 || KEYS.length > 3) error()
 
-const main = async () => {
-  const fetchInfo = KEYS.includes('-i')
+// check for -i flag
+let fetchInfo = false
+const fetchInfoIndex = KEYS.indexOf('-i')
+if (fetchInfoIndex) {
+  KEYS = [...KEYS.slice(0, fetchInfoIndex), ...KEYS.slice(fetchInfoIndex + 1)]
+  fetchInfo = true
+}
 
+const main = async () => {
   const isNpm = KEYS[0].match(REGEX.npm)
   if (isNpm) {
     const folder = !isOption(KEYS[1]) ? KEYS[1] : undefined
