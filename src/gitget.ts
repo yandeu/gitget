@@ -1,4 +1,15 @@
-import { PACKAGE_NAME, download, error, getDefaultBranch, makeBold, setSilent, step, success, trim } from './utils'
+import {
+  PACKAGE_NAME,
+  download,
+  error,
+  getGithubInfo,
+  makeBold,
+  setSilent,
+  step,
+  success,
+  trim,
+  writeInfoFile
+} from './utils'
 import { getNpmPackage } from './services/npm'
 
 export interface GitGetOption {
@@ -13,17 +24,19 @@ export interface GitGetOption {
   silent?: boolean
   /** npm package name */
   npm?: string
+  /** download only information instead */
+  info?: boolean
 }
 
 export const gitget = async (options: GitGetOption) => {
-  const { user, repo, folder, subdir, branch, test, silent, npm } = options
+  const { user, repo, folder, subdir, branch, test, silent, npm = false, info = false } = options
 
   // set silent
   setSilent(silent)
 
   // get from npm
   if (npm) {
-    const res = await getNpmPackage(npm, folder)
+    const res = await getNpmPackage(npm, folder, info)
     return res
   }
 
@@ -53,20 +66,30 @@ export const gitget = async (options: GitGetOption) => {
 
   let defaultBranch = BRANCH
 
+  let obj
+
   // get default branch
   if (!BRANCH) {
-    defaultBranch = await getDefaultBranch(USER, REPO).catch(err => error(err.message))
-    if (!defaultBranch) return error('Default branch not found')
+    obj = await getGithubInfo(USER, REPO).catch(err => error(err.message))
+    if (!obj || !obj.default_branch) return error('Default branch not found')
+    defaultBranch = obj.default_branch
     step('Default Branch:', defaultBranch)
   }
 
   step('Tag/Branch/Commit:', defaultBranch)
 
-  const downloadLink = `https://github.com/${USER}/${REPO}/archive/${defaultBranch}.tar.gz`
   const CWD = FOLDER ?? REPO
-  await download(downloadLink, CWD, SUBDIR)
+
+  if (!info) {
+    const downloadLink = `https://github.com/${USER}/${REPO}/archive/${defaultBranch}.tar.gz`
+    await download(downloadLink, CWD, SUBDIR)
+  }
+
+  if (info) {
+    await writeInfoFile(JSON.stringify(obj, null, 2), CWD)
+  }
 
   // done
-  success(`Done! Your repo is in /${makeBold(CWD)}.`)
+  success(`Done! Your ${info ? 'info' : 'repo'} is in /${makeBold(CWD)}.`)
   return { success: true }
 }

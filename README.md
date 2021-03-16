@@ -29,6 +29,9 @@ $ npx gitget user/repo#1234abcd  # commit hash
 # or simply copy and past the url from your browser
 # (downloads the subdir "core/conventional-commits/lib" from lerna/lerna#next)
 $ npx gitget https://github.com/lerna/lerna/tree/next/core/conventional-commits/lib
+
+# use the flag -i to only download information about the repo
+$ npx gitget user/repo -i
 ```
 
 ```bash
@@ -39,6 +42,9 @@ $ npx gitget npm:packageName
 
 # download npm package to /folder
 $ npx gitget npm:packageName folder
+
+# use the flag -i to only download information about the package
+$ npx gitget npm:packageName -i
 ```
 
 ### Node.js
@@ -56,6 +62,8 @@ interface GitGetOption {
   silent?: boolean
   /** npm package name */
   npm?: string
+  /** download only information instead */
+  info?: boolean
 }
 ```
 

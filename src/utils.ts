@@ -25,6 +25,23 @@ export const PACKAGE_NAME = 'gitget'
 const PATH = `${path.resolve()}/.gitget`
 const FILENAME = `${PATH}/repo.tar.gz`
 
+export const writeInfoFile = async (data: string, folder: string) => {
+  step(`Create directory /${makeBold(folder)}`)
+  await addDirectory(folder).catch(err => error(err.message))
+
+  step('Write info file')
+  await writeFile(`${folder}/info.json`, data).catch(err => error(err.message))
+}
+
+export const writeFile = async (path: string, data: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(path, data, { encoding: 'utf-8' }, async err => {
+      if (err) return reject(error(err.message))
+      resolve()
+    })
+  })
+}
+
 export const parseGithubUrl = (url: string): string => {
   // github url
   const github = /^https:\/\/github\.com\//gm
@@ -90,7 +107,7 @@ export const readTar = (file: string): Promise<string> => {
 
 export const makeBold = (str: string) => `\u001b[1m${str}\u001b[22m`
 
-export const getDefaultBranch = async (USER: string, REPO: string) => {
+export const getGithubInfo = async (USER: string, REPO: string) => {
   const options = { headers: { 'User-Agent': 'request', Accept: 'application/vnd.github.v3+json' } }
 
   const res = await fetch(`https://api.github.com/repos/${USER}/${REPO}`, null, options).catch(err =>
@@ -99,9 +116,7 @@ export const getDefaultBranch = async (USER: string, REPO: string) => {
 
   if (!res || typeof res !== 'string') return error()
 
-  const json = JSON.parse(res)
-
-  return json.default_branch
+  return JSON.parse(res)
 }
 
 export const addDirectory = (path: string): Promise<void> => {
