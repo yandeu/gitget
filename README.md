@@ -92,9 +92,15 @@ gitget({ GitGetOptions })
 
 Download [Day.js](https://github.com/iamkun/dayjs/) for example.
 
-```console
-npx gitget iamkun/dayjs
+```bash
+# download the repository
+$ npx gitget iamkun/dayjs
+
+# download information about the repository
+$ npx gitget iamkun/dayjs -i
 ```
+
+_Use `npx gitget@latest ...` if something is not working._
 
 ## License
 
