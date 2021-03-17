@@ -13,7 +13,7 @@ interface NpmResponse {
 
 export const getNpmPackage = async (pkg: string, folder?: string, info = false): Promise<any> => {
   step('Fetch npm data')
-  const json = await fetch(`https://registry.npmjs.org/${pkg}`).catch(err => error(err.message))
+  const json = await fetch(`https://registry.npmjs.org/${pkg}/latest`).catch(err => error(err.message))
 
   step('Parse npm data')
   if (typeof json !== 'string') return error()
