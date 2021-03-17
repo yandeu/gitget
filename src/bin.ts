@@ -9,7 +9,7 @@ if (KEYS.length === 0 || KEYS.length > 3) error()
 // check for -i flag
 let fetchInfo = false
 const fetchInfoIndex = KEYS.indexOf('-i')
-if (fetchInfoIndex) {
+if (fetchInfoIndex >= 0) {
   KEYS = [...KEYS.slice(0, fetchInfoIndex), ...KEYS.slice(fetchInfoIndex + 1)]
   fetchInfo = true
 }
