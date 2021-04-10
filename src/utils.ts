@@ -1,6 +1,7 @@
 import fs from 'fs'
 import https from 'https'
 import path from 'path'
+import rimraf from 'rimraf'
 import { symbols } from './symbols'
 import tar from 'tar'
 
@@ -22,8 +23,8 @@ export const setSilent = (silent: boolean | undefined) => {
 
 export const PACKAGE_NAME = 'gitget'
 // const
-const PATH = `${path.resolve()}/.gitget`
-const FILENAME = `${PATH}/repo.tar.gz`
+const PATH = path.join(path.resolve(), '.gitget')
+const FILENAME = path.join(PATH, 'repo.tar.gz')
 
 export const writeInfoFile = async (data: string, folder: string) => {
   step(`Create directory /${makeBold(folder)}`)
@@ -128,6 +129,15 @@ export const addDirectory = (path: string): Promise<void> => {
   })
 }
 
+export const removeFile = (file: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    fs.unlink(file, err => {
+      if (err) return reject(err.message)
+      return resolve()
+    })
+  })
+}
+
 export const removeDirectory = (path: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     fs.rmdir(path, { recursive: true }, err => {
@@ -182,6 +192,15 @@ export const fetch = (
   })
 }
 
+export const rm = (path: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    rimraf(path, err => {
+      if (err) return reject(err.message)
+      return resolve()
+    })
+  })
+}
+
 export const download = async (downloadLink: string, CWD: string, SUBDIR?: string) => {
   // create .tmp directory
   await addDirectory(PATH).catch(err => error(err.message))
@@ -199,8 +218,14 @@ export const download = async (downloadLink: string, CWD: string, SUBDIR?: strin
   // untar
   await unTar(FILENAME, SUBDIR, CWD, firstPath).catch(err => error(err.message))
 
+  step('Clean:', 'remove tmp files')
+  await rm(PATH).catch(err => error(err.message))
+
+  // remove tar
+  // await removeFile(FILENAME).catch(err => error(err.message))
+
   // remove .tmp directory
-  await removeDirectory(PATH).catch(err => error(err.message))
+  // await removeDirectory(PATH).catch(err => error(err.message))
 }
 
 export const error = (msg?: string) => {
