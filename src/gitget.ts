@@ -83,9 +83,7 @@ export const gitget = async (options: GitGetOption) => {
   if (!info) {
     const downloadLink = `https://github.com/${USER}/${REPO}/archive/${defaultBranch}.tar.gz`
     await download(downloadLink, CWD, SUBDIR)
-  }
-
-  if (info) {
+  } else {
     await writeInfoFile(JSON.stringify(obj, null, 2), CWD)
   }
 
