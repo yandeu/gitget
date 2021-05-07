@@ -243,10 +243,11 @@ export const success = (msg: string) => {
   if (_silent) return
   console.log(`${symbols.success} ${msg}`)
 }
+
 export const parseOptions = (KEYS: string | Array<string>) => {
   // serializing args to one type
-  if (typeof KEYS === "string") {
-    KEYS = KEYS.split(" ")
+  if (typeof KEYS === 'string') {
+    KEYS = KEYS.split(' ')
   }
 
   // check for -i flag
