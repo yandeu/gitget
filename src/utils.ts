@@ -99,7 +99,7 @@ export const readTar = (file: string): Promise<string> => {
   return new Promise(resolve => {
     fs.createReadStream(file)
       .pipe(tar.t())
-      .on('entry', entry => {
+      .on('entry', (entry: { path: string | PromiseLike<string> }) => {
         // return the first path
         return resolve(entry.path)
       })
@@ -242,4 +242,40 @@ export const step = (...msg: any[]) => {
 export const success = (msg: string) => {
   if (_silent) return
   console.log(`${symbols.success} ${msg}`)
+}
+export const parseOptions = (KEYS: string | Array<string>) => {
+  // serializing args to one type
+  if (typeof KEYS === "string") {
+    KEYS = KEYS.split(" ")
+  }
+
+  // check for -i flag
+  let fetchInfo = false
+  const fetchInfoIndex = KEYS.indexOf('-i')
+  if (fetchInfoIndex >= 0) {
+    KEYS = [...KEYS.slice(0, fetchInfoIndex), ...KEYS.slice(fetchInfoIndex + 1)]
+    fetchInfo = true
+  }
+  const isNpm = KEYS[0].match(REGEX.npm)
+  if (isNpm) {
+    const folder = !isOption(KEYS[1]) ? KEYS[1] : undefined
+    return { npm: KEYS[0].replace(/^npm:/, ''), folder: folder, info: fetchInfo }
+  }
+
+  KEYS[0] = parseGithubUrl(KEYS[0])
+
+  const USER = KEYS[0].split('/')[0]
+  const REPO = KEYS[0].split('/')[1]
+  if (!REPO) error()
+
+  const SUBDIR = KEYS[0]
+    .replace(/\/$/, '')
+    .split('/')
+    .filter((v, i) => i >= 2)
+    .join('/')
+
+  const FOLDER = KEYS[1]
+  const BRANCH = SUBDIR ? SUBDIR.split('#')[1] : REPO.split('#')[1]
+
+  return { folder: FOLDER, user: USER, subdir: SUBDIR, branch: BRANCH, repo: REPO, info: fetchInfo }
 }

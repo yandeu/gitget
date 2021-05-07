@@ -2,8 +2,8 @@
   "name": "gitget",
   "version": "0.0.12",
   "description": "📦 Clone GitHub repos fast and easy.",
-  "main": "lib/gitget.js",
-  "types": "lib/gitget.d.ts",
+  "main": "lib/api.js",
+  "types": "lib/api.d.ts",
   "bin": {
     "gitget": "./lib/bin.js"
   },
