@@ -1,14 +1,7 @@
 import { download, error, fetch, makeBold, step, success, writeInfoFile } from '../utils'
 
 interface NpmResponse {
-  'dist-tags': { latest: string }
-  versions: {
-    [version: string]: {
-      dist: {
-        tarball: string
-      }
-    }
-  }
+  dist: { tarball: string }
 }
 
 export const getNpmPackage = async (pkg: string, folder?: string, info = false): Promise<any> => {
@@ -24,8 +17,7 @@ export const getNpmPackage = async (pkg: string, folder?: string, info = false):
 
   if (!info) {
     step('Download npm package')
-    const version = obj['dist-tags'].latest
-    await download(obj.versions[version].dist.tarball, _folder)
+    await download(obj.dist.tarball, _folder)
   }
 
   if (info) {
