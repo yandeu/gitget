@@ -1,6 +1,9 @@
-.github
-node_modules
-package-lock.json
-src
-.gitget
-.dev
+/*
+
+!/.npmrc
+!/LICENSE
+!/README.md
+!/bundles
+!/lib
+!/package.json
+!/readme

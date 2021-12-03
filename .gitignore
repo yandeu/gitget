@@ -1,5 +1,6 @@
-node_modules
-package-lock.json
-lib
-.gitget
-.dev
+/.dev
+/.gitget
+/coverage
+/lib
+/node_modules
+/package-lock.json
